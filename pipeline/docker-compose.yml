@@ -1,0 +1,48 @@
+version: "3.8"
+services:
+  pipeline_svc:
+    container_name: pipeline_ctr
+    image: jenkins/jenkins:latest-jdk17
+    ports:
+    - "127.0.0.1:9080:8080"
+    volumes:
+    - pipeline_vol:/var/jenkins_home
+    networks:
+    - pipeline_net
+    restart: unless-stopped
+
+  petclinic_svc:
+    container_name: petclinic_ctr
+    #image: java/alpine:openjdk17
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: './workspace/petclinic_pipeline/target/spring-petclinic-3.1.0-SNAPSHOT.jar'
+    image: openjdk17:slim # since 'build' is specified, 'image' will simply be the image's name
+    ports:
+    - "127.0.0.1:8080:8080"
+    volumes:
+    - pipeline_vol:/var/petclinic
+    networks:
+    - pipeline_net
+    restart: unless-stopped
+    
+  mail4jenkins:
+    container_name: mailhog_ctr
+    image: mailhog/mailhog
+    ports:
+    - "127.0.0.1:8025:8025" #8025 for mailhog console, and 1025 is the SMTP port
+    networks:
+    - pipeline_net
+    restart: unless-stopped
+
+networks:
+  pipeline_net:
+    driver: bridge
+
+volumes:
+  pipeline_vol:
+  
+  
+  
+  
