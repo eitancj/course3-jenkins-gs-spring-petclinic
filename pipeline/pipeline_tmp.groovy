@@ -30,7 +30,8 @@ pipeline {
         unsuccessful {
             emailext body: 'Build $BUILD_DISPLAY_NAME failed for job $JOB_NAME', \
             subject: 'Jenkins: error in job!', to: 'dmpumve341@oxomail.org', \
-            recipientProviders: [culprits(), brokenBuildSuspects()], from: 'Jim'
+            recipientProviders: [culprits(), brokenBuildSuspects()], from: 'Jim', \
+            attachLog: true
         }
         // following successful build, archive the JAR file
         success {
