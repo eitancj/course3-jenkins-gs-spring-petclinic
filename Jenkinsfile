@@ -5,20 +5,13 @@ pipeline {
     // from drop-down menu 'Pipeline script from SCM' under Definition under Pipeline
 
     stages {
-
-        stage("build") {
+        stage("Build") {
             steps {
                 sh "./mvnw -Dtest=\\!VetTests clean package"
             }
         }
         
-        stage("jacoco") {
-            steps {
-                jacoco()
-            }
-        }
-
-        stage("junit") {
+        stage("JUnit") {
             steps {
                 junit '**/target/surefire-reports/TEST*.xml'
             }
@@ -26,14 +19,15 @@ pipeline {
     }
 
     post {
-        success {
-            archiveArtifacts '**/target/*.jar'
-        }
         always {
-            emailext body: "${env.BUILD_URL}\n${currentBuild.absoluteUrl}",
+            emailext body: "\n${currentBuild.absoluteUrl}",
+                from: 'jenkins',
             	to: 'default@jenkins.mailhog', 
             	recipientProviders: [previous()], 
             	subject: "${currentBuild.currentResult}: Job ${env.JOB_NAME} [${env.BUILD_NUMBER}]"
+        }
+        success {
+            archiveArtifacts '**/target/*.jar'
         }
     }
 }
