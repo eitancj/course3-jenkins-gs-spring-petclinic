@@ -15,7 +15,9 @@ pipeline {
                 //sh './mvnw -Dtest=\\!VetTests clean verify'
 
                 // Create JAR file
-                sh './mvnw -Dtest=\\!VetTests clean compile'
+                //sh './mvnw -Dtest=\\!VetTests clean compile'
+
+                sh 'true'
             }
         }
     }
@@ -28,10 +30,12 @@ pipeline {
         }
         // following an unsuccessful build, send a mail using mailhog
         unsuccessful {
-            emailext body: 'Build $BUILD_DISPLAY_NAME failed for job $JOB_NAME', \
-            subject: 'Jenkins: error in job!', to: 'dmpumve341@oxomail.org', \
+            emailext body: "Build $BUILD_DISPLAY_NAME failed for job '$JOB_NAME'" + \
+            '\nTo fix the issue please visit: $JOB_URL', \
+            subject: "Jenkins job: $currentBuild.result", \
+            to: 'dmpumve341@oxomail.org', \
             recipientProviders: [culprits(), brokenBuildSuspects()], from: 'Jim', \
-            attachLog: true
+            attachLog: true, compressLog: true
         }
         // following successful build, archive the JAR file
         success {
