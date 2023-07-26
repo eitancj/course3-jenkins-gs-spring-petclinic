@@ -17,14 +17,15 @@ pipeline {
                 jacoco()
             }
         }
+
+        stage("junit") {
+            junit '**/target/surefire-reports/TEST*.xml'
+        }
     }
 
     post {
         success {
             archiveArtifacts '**/target/*.jar'
-        }
-        success {
-            junit '**/target/surefire-reports/TEST*.xml'
         }
         always {
             emailext body: "${env.BUILD_URL}\n${currentBuild.absoluteUrl}",
