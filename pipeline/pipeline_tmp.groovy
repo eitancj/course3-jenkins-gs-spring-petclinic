@@ -15,9 +15,9 @@ pipeline {
                 //sh './mvnw -Dtest=\\!VetTests clean verify'
 
                 // Create JAR file
-                //sh './mvnw -Dtest=\\!VetTests clean compile'
+                sh "./mvnw -Dtest=\\!VetTests -Djar.finalName=PetClinic_$BUILD_NUMBER.jar clean package"
 
-                sh 'false'
+                //sh 'false'
             }
         }
     }
@@ -26,8 +26,8 @@ pipeline {
         // always collect JUnit test results
         always {
             //echo "\nALWAYYYYYYS!\n"
-            //junit '**/target/surefire-reports/TEST-*.xml'
-            sh 'true'
+            junit '**/target/surefire-reports/TEST-*.xml'
+            //sh 'true'
         }
         // following an unsuccessful build, send a mail using mailhog
         unsuccessful {
@@ -40,8 +40,7 @@ pipeline {
         }
         // following successful build, archive the JAR file
         success {
-            //archiveArtifacts 'target/*.jar'
-            echo "\nJob Succeeded!\n"
+            archiveArtifacts 'target/*.jar'
         }
     }
 }
