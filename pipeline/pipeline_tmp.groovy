@@ -17,7 +17,7 @@ pipeline {
                 // Create JAR file
                 //sh './mvnw -Dtest=\\!VetTests clean compile'
 
-                sh 'true'
+                sh 'false'
             }
         }
     }
@@ -26,7 +26,8 @@ pipeline {
         // always collect JUnit test results
         always {
             //echo "\nALWAYYYYYYS!\n"
-            junit '**/target/surefire-reports/TEST-*.xml'
+            //junit '**/target/surefire-reports/TEST-*.xml'
+            sh 'true'
         }
         // following an unsuccessful build, send a mail using mailhog
         unsuccessful {
